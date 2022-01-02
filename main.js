@@ -3,6 +3,9 @@ import imgUrl from './portrait.jpg';
 import * as THREE from 'three';
 
 var scene, camera, renderer, sphere, portrait;
+const isMobile = [/Android/i, /iPhone/i].some((t) => {
+  return navigator.userAgent.match(t);
+});
 
 init();
 
@@ -25,7 +28,7 @@ function init() {
     new THREE.IcosahedronGeometry(10, 1),
     new THREE.MeshBasicMaterial({ color: 0xff6347, wireframe: true })
   );
-  if (isMobile()) {
+  if (isMobile) {
     sphere.position.set(0, -10, 20);
   } else {
     sphere.position.set(25, 10, -5);
@@ -71,8 +74,8 @@ function animate(force) {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    if (isMobile()) {
-      portrait.position.set(0, -window.innerHeight / 6.4, 0);
+    if (isMobile) {
+      portrait.position.set(0, -window.innerHeight / 7.4, 0);
     } else {
       portrait.position.set(-10, -window.innerHeight / 14, 0);
     }
@@ -84,12 +87,6 @@ function animate(force) {
 
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
-}
-
-function isMobile() {
-  return [/Android/i, /iPhone/i].some((t) => {
-    return navigator.userAgent.match(t);
-  });
 }
 
 function moveCamera() {
