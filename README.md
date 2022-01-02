@@ -1,4 +1,4 @@
-Playing around with Three.js
+Playing around with Three.js, made a fun one page demo [site](https://adamthreedemo.netlify.app/).
 
 ```
 npm install
