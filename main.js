@@ -1,4 +1,5 @@
-import './style.css'
+import './style.css';
+import imgUrl from './portrait.jpg';
 import * as THREE from 'three';
 
 var scene, camera, renderer, sphere, portrait;
@@ -32,7 +33,7 @@ function init() {
   scene.add(sphere);
 
   // Portrait Gemoetry
-  const texture = new THREE.TextureLoader().load('portrait.jpg');
+  const texture = new THREE.TextureLoader().load(imgUrl);
   portrait = new THREE.Mesh(
     new THREE.BoxGeometry(18, 24, 0.25),
     new THREE.MeshBasicMaterial({ map: texture })
