@@ -1,7 +1,7 @@
 import './style.css'
 import * as THREE from 'three';
 
-var scene, camera, renderer, sphere;
+var scene, camera, renderer, sphere, portrait;
 
 init();
 
@@ -20,17 +20,24 @@ function init() {
   camera.lookAt(0, 0, 0)
 
   // Sphere Gemometry
-  const geometry = new THREE.IcosahedronGeometry(10, 1);
-  const material = new THREE.MeshBasicMaterial({ color: 0xff6347, wireframe: true });
-  sphere = new THREE.Mesh(geometry, material);
+  sphere = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(10, 1),
+    new THREE.MeshBasicMaterial({ color: 0xff6347, wireframe: true })
+  );
   if (isMobile()) {
     sphere.position.set(0, -10, 20);
-
   } else {
     sphere.position.set(25, 10, -5);
   }
-
   scene.add(sphere);
+
+  // Portrait Gemoetry
+  const texture = new THREE.TextureLoader().load('portrait.jpg');
+  portrait = new THREE.Mesh(
+    new THREE.BoxGeometry(18, 24, 0.25),
+    new THREE.MeshBasicMaterial({ map: texture })
+  );
+  scene.add(portrait);
 
   // Grid
   const grid = new THREE.GridHelper(250, 50);
@@ -40,7 +47,7 @@ function init() {
   Array(800).fill().forEach(() => addCube());
 
   // Loop
-  animate();
+  animate(true);
   document.body.onscroll = moveCamera;
 
 }
@@ -57,12 +64,17 @@ function addCube() {
   scene.add(cube);
 }
 
-function animate() {
+function animate(force) {
 
-  if (window.innerWidth != renderer.innerWidth || window.innerHeight != renderer.innerHeight) {
+  if (force || window.innerWidth != renderer.innerWidth || window.innerHeight != renderer.innerHeight) {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    if (isMobile()) {
+      portrait.position.set(0, -window.innerHeight / 6.4, 0);
+    } else {
+      portrait.position.set(-10, -window.innerHeight / 14, 0);
+    }
   }
 
   sphere.rotation.x -= 0.001;
@@ -81,7 +93,6 @@ function isMobile() {
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
-  //camera.position.z = 30 + (t * 0.1);
-  //camera.position.x = 10 + (t * 0.01);
   camera.position.y = 10 + (t * 0.05);
+  portrait.rotation.y = t * 0.0015;
 }
