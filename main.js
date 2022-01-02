@@ -2,9 +2,7 @@ import './style.css'
 import * as THREE from 'three';
 
 const scene = new THREE.Scene();
-
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#canvas'),
 });
@@ -20,13 +18,19 @@ const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
 function animate() {
-  requestAnimationFrame(animate);
+
+  if (window.innerWidth != renderer.innerWidth || window.innerHeight != renderer.innerHeight) {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }
 
   mesh.rotation.x += 0.001;
   mesh.rotation.y += 0.005;
   mesh.rotation.z += 0.01;
 
   renderer.render(scene, camera);
+  requestAnimationFrame(animate);
 }
 
 animate();
