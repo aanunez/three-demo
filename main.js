@@ -24,9 +24,10 @@ function init() {
   const material = new THREE.MeshBasicMaterial({ color: 0xff6347, wireframe: true });
   sphere = new THREE.Mesh(geometry, material);
   if (isMobile()) {
-    sphere.position.set(25, 10, -5);
-  } else {
     sphere.position.set(0, -10, 20);
+
+  } else {
+    sphere.position.set(25, 10, -5);
   }
 
   scene.add(sphere);
