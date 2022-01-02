@@ -1,31 +1,48 @@
 import './style.css'
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// Basic Setup
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector('#canvas'),
-});
+var scene, camera, renderer, sphere;
 
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.set(10, 10, 30);
-camera.lookAt(0, 0, 0)
+init();
 
-// Sphere Gemometry
-const geometry = new THREE.IcosahedronGeometry(10, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xff6347, wireframe: true });
-const sphere = new THREE.Mesh(geometry, material);
-sphere.position.set(25, 10, -5);
+function init() {
 
-scene.add(sphere);
+  // Basic Setup
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector('#canvas'),
+  });
 
-// Grid
-const grid = new THREE.GridHelper(250, 50);
-scene.add(grid);
-//const controls = new OrbitControls(camera, renderer.domElement);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.position.set(10, 10, 30);
+  camera.lookAt(0, 0, 0)
+
+  // Sphere Gemometry
+  const geometry = new THREE.IcosahedronGeometry(10, 1);
+  const material = new THREE.MeshBasicMaterial({ color: 0xff6347, wireframe: true });
+  sphere = new THREE.Mesh(geometry, material);
+  if (isMobile()) {
+    sphere.position.set(25, 10, -5);
+  } else {
+    sphere.position.set(0, -10, 20);
+  }
+
+  scene.add(sphere);
+
+  // Grid
+  const grid = new THREE.GridHelper(250, 50);
+  scene.add(grid);
+
+  // Space junk
+  Array(800).fill().forEach(() => addCube());
+
+  // Loop
+  animate();
+  document.body.onscroll = moveCamera;
+
+}
 
 function addCube() {
   const geometry = new THREE.BoxGeometry(10, 10, 10);
@@ -38,9 +55,7 @@ function addCube() {
 
   scene.add(cube);
 }
-Array(800).fill().forEach(() => addCube());
 
-// Main animate loop
 function animate() {
 
   if (window.innerWidth != renderer.innerWidth || window.innerHeight != renderer.innerHeight) {
@@ -53,9 +68,14 @@ function animate() {
   sphere.rotation.y -= 0.005;
   sphere.rotation.z += 0.01;
 
-  //controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
+}
+
+function isMobile() {
+  return [/Android/i, /iPhone/i].some((t) => {
+    return navigator.userAgent.match(t);
+  });
 }
 
 function moveCamera() {
@@ -64,6 +84,3 @@ function moveCamera() {
   //camera.position.x = 10 + (t * 0.01);
   camera.position.y = 10 + (t * 0.05);
 }
-
-animate();
-document.body.onscroll = moveCamera;
